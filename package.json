@@ -1,0 +1,38 @@
+{
+  "name": "mom_dad_new",
+  "version": "1.0.0",
+  "description": "",
+  "main": "MongoQueries.js",
+  "dependencies": {
+    "aws-sdk": "^2.480.0",
+    "bluebird": "^3.5.5",
+    "body-parser": "^1.19.0",
+    "colors": "^1.3.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "file-type": "^12.0.0",
+    "http": "^0.0.0",
+    "mongoose": "^5.6.0",
+    "multer": "^1.4.1",
+    "multer-s3": "^2.9.0",
+    "multiparty": "^4.2.1",
+    "path": "^0.12.7",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkupsaw/compliment-hub.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gkupsaw/compliment-hub/issues"
+  },
+  "homepage": "https://github.com/gkupsaw/compliment-hub#readme"
+}
