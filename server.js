@@ -116,7 +116,7 @@ const getDate = () => {
 const storage = multer.diskStorage({
     destination: (req, file, callback) => callback(null, '../uploads/'),
     filename: (req, file, callback) => callback(null, 'IMG-' + getDate() + '-' + file.originalname),
-    fileFilter: (req, file, cb) => (file.mimetype === 'img/jpeg' || file.mimetype === 'img/png') ? cb(null, true) : cb(null, false)
+    // fileFilter: (req, file, cb) => (file.mimetype === 'img/jpeg' || file.mimetype === 'img/png') ? cb(null, true) : cb(null, false)
 });
 
 upload = multer({storage}).array('image');
