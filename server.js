@@ -109,8 +109,8 @@ app.use((req, res, next) => {  //copied from enable-cors.org, handles CORS relat
 /* Multer */
 
 const getDate = () => {
-    date = new Date();
-    return date.getMonth()++ + '-' + date.getDate() + '-' + date.getFullYear() + '--' + date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds() + '-' + date.getMilliseconds();
+    let date = new Date();
+    return (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear() + '--' + date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds() + '-' + date.getMilliseconds();
 }
 
 const storage = multer.diskStorage({
@@ -126,9 +126,7 @@ app.post('/upload', (req, res) => {
     upload(req, res, err => {
         if (err) console.log('Error uploading'.red, err);
         MongoSchemas.UploadImage(req.file)
-            .then(db_file => {
-                res.status(200).send(db_file);
-            });
+            .then(db_file => res.status(200).send(db_file));
     });
 });
 
@@ -189,7 +187,6 @@ app.get('/pictures', (req, res) => {
     console.log('- Images request received:', req.method.cyan, req.url.underline);
     Image.find({}, (err,data) => {
         if (err) return console.error('Error getting pictures'.red, err);
-        console.log(data)
         res.status(200).send(data);
     });
 });
