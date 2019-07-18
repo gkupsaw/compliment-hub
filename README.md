@@ -1,14 +1,14 @@
 ## Steps to setup
 
-### `npm install`
+#### `npm install`
 
 Run npm install in this directory and /compliment to add required modules.
 
-### `touch .env`
+#### `touch .env`
 
 Create a file named .env to store environment variables MONGO_HOST, etc.
 
-### `touch compliment/SERVER.js`
+#### `touch compliment/SERVER.js`
 
 In /compliment, create a file named SERVER.js with module.exports containing the link to your server.
 
