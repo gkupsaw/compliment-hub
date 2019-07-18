@@ -5,6 +5,8 @@ import Compliments from './molecules/Compliments';
 import SlideShow from './molecules/SlideShow';
 import NavBar from './atoms/NavBar';
 
+import EC2 from './SERVER';
+
 class App extends React.Component {
   render() {
     const nav_items = [

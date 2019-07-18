@@ -126,7 +126,7 @@ app.post('/upload', (req, res) => {
     upload(req, res, err => {
         if (err) console.log('Error uploading'.red, err);
         MongoSchemas.UploadImage(req.file)
-            .then(db_file => res.status(200).send(db_file));
+            .then(db_file => console.log('Uploaded and saved in DB'.green) && res.status(200).send(db_file));
     });
 });
 
