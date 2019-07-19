@@ -24,7 +24,7 @@ export default class SlideShowForm extends Component {
             delete files.length;
             Object.keys(files).forEach(key => {
                 file = files[key];
-                (file.type === 'img/jpeg' || file.type === 'img/png')
+                (file.type === 'image/jpeg' || file.type === 'image/png')
                     ? formData.append('image', file)
                     : console.error('Error uploading file: File "' + file.name + '" is not of type JPEG or PNG. Ignoring file.');
             });
