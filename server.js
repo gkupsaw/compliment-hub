@@ -166,8 +166,7 @@ app.use((err, req, res, next) => {
 
 app.post('/upload', upload.array('image'), async (req, res) => {
     console.log('- Image upload request received:', req.method.cyan, req.url.underline);
-    let files = req.file ? req.file : req.files,
-        images = files.reduce((acc, file) => (file.mimetype === 'img/jpeg' || file.mimetype === 'img/png') && acc.concat(file), []);
+    let images = req.file ? req.file : req.files;
     let db_files = await MongoSchemas.uploadImages(images);
     console.log('Uploaded and saved file(s) in DB'.green);
     res.status(200).send(db_files);

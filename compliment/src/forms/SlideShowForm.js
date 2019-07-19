@@ -19,20 +19,28 @@ export default class SlideShowForm extends Component {
         if (this.state.selectedFiles) {
             let formData = new FormData(),
                 config = { headers: { 'content-type': 'multipart/form-data' } },
-                files = {...this.state.selectedFiles};
+                files = {...this.state.selectedFiles},
+                file;
             delete files.length;
-            Object.keys(files).forEach(key => formData.append('image', files[key]));
+            Object.keys(files).forEach(key => {
+                file = files[key];
+                (file.type === 'img/jpeg' || file.type === 'img/png')
+                    ? formData.append('image', file)
+                    : console.error('Error uploading file: File "' + file.name + '" is not of type JPEG or PNG. Ignoring file.');
+            });
 
-            axios.post(EC2 + '/upload', formData, config)
-                .then(res => {
-                    console.log('Req complete, res data:', res.data);
-                    this.props.callback(res.data);
-                    this.setState({ selectedFiles: [], fileAmt: 0 });
-                })
-                .catch(err => {
-                    console.error('Error submitting file:', err);
-                    this.setState({ networkError: true });
-                });
+            (Object.keys(formData).length > 0)
+                ? axios.post(EC2 + '/upload', formData, config)
+                    .then(res => {
+                        console.log('Req complete, res data:', res.data);
+                        this.props.callback(res.data);
+                        this.setState({ selectedFiles: [], fileAmt: 0 });
+                    })
+                    .catch(err => {
+                        console.error('Error submitting file:', err);
+                        this.setState({ networkError: true });
+                    })
+                : console.error('No files in FormData => all of invalid type and ignored');
         }
     }
 
