@@ -8,12 +8,11 @@ import NavBar from './atoms/NavBar';
 class App extends React.Component {
   render() {
     const nav_items = [
-      {'Compliment Hub': '#'},
       {'Home': 'compliments', 'SlideShow': 'slideshow', 'Submit': '/submit'}
     ];
     return (
         <BrowserRouter>
-          <NavBar items={nav_items} />
+          <NavBar items={nav_items} appName='Compliment Hub' />
           <div className='content'>
               <Switch>
                   <Route exact path="/submit" component={Main} />

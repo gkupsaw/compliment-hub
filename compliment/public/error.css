@@ -44,7 +44,8 @@ code {
   width: max-content;
   flex-flow: column;
   border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.6);
+  height: 100%;
+  width: 100%;
 }
 
 /* Element Styling */
@@ -61,30 +62,15 @@ a:hover {
 
 /* Text */
 
-.largeText {
+.large-text {
   color: #337ab7;
   font-size: 30px;
   padding: 5px 10px;
 }
 
-.smallText {
+.small-text {
   color: #337ab7;
   padding: 5px 10px;
   margin-top: 20px;
   word-wrap: break-word;
-}
-
-.fancyErr {
-  color: darkred;
-  position: absolute;
-  font: 15px;
-  background: rgba(255,0,0,0.5);
-  border: 2px solid darkred;
-  border-radius: 8px;
-  padding: 5px 10px;
-  width: 100%;
-  transform: rotate(720deg);
-  transition: 0.5;
-  transition-timing-function: ease;
-  -webkit-transform: rotate(720deg);
 }

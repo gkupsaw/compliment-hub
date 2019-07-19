@@ -21,7 +21,8 @@ export default class SlideShow extends Component {
             loading: true,
             modalVisible: false,
             warningVisible: false,
-            imageToBeRemoved: ''
+            imageToBeRemoved: '',
+            dummyImageType: 'wide'
         }
     }
 
@@ -103,11 +104,13 @@ export default class SlideShow extends Component {
         return (
             <div className='slideshow-container'>
                 <div className='slideshow-img-container'>
-                    <div className='fas fa-cloud modal-icon' style={{ fontSize: 30, top: '-40px', right: '-40px' }}
+                    <div className='fas fa-cloud modal-icon' style={{ top: '-10%', right: '-30%' }} title='View uploaded images'
                             onClick={() => this.setState({ modalVisible: true })} />
+                    <div className='fas fa-exchange-alt modal-icon' style={{ top: '-10%', right: 0 }} title='Change image dimensions'
+                            onClick={() => this.setState({ dummyImageType: this.state.dummyImageType === 'tall' ? 'wide' : 'tall' })} />
                     <div className='modal' style={{transform: this.state.modalVisible ? 'scale(1)' : 'scale(0)'}}>
                         <div className='modal-icon' onClick={() => this.setState({ modalVisible: false })}>&times;</div>
-                        <div className='box-display' style={{ justifyContent: 'flex-start' }}>
+                        <div className='box-display nax-size' style={{ justifyContent: 'flex-start' }}>
                             {this.state.imageLinks.reduce((acc, link) => acc.concat(
                                 <div id={link+'container'} key={link} className='preview-img-container'>
                                     <div id='remove-img' className='modal-icon'>
@@ -118,13 +121,13 @@ export default class SlideShow extends Component {
                         </div>
                     </div>
                     <div className='modal' style={{transform: this.state.warningVisible ? 'scale(1)' : 'scale(0)'}}>
-                        <div>Are you sure?</div>
+                        <div>Are you sure you want to remove this image?</div>
                         <div className='flex-centered'>
                             <div style={{ margin: 10, cursor: 'pointer' }} onClick={this.removeImage}>Yes</div>
                             <div style={{ margin: 10, cursor: 'pointer' }} onClick={() => this.setState({ warningVisible: false })}>No</div>
                         </div>
                     </div>
-                    <img id='dummy-img' alt='' style={{ opacity: 0 }} />
+                    <img id='dummy-img' className={'dummy-img-' + this.state.dummyImageType} alt='' />
                     <div className='flex-centered-col max-size' style={{ visibility: this.state.imageLinks.length === 0 ? 'visible' : 'hidden', fontSizefontWeight: 'bold', position: 'absolute' }}>
                         <h1>Upload some pics!</h1>
                         <h3>This looks a lot nicer if you do :)</h3>

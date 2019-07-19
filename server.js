@@ -41,7 +41,7 @@ const socket_name = 'Universal';
 
 io.sockets.on('connection', (socket) => {
     socket.on('join', () => {
-        console.log('Socket Connected! Socket ID:', socket.id);
+        console.log('- Socket Connected! Socket ID:', socket.id);
         socket.join(socket_name);
     });
 

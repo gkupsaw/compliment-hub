@@ -28,14 +28,14 @@ export default class ComplimentForm extends Component {
         if (this.state.networkError)
             return <NetworkError networkError = {this.state.networkError} error='Compliment not submitted' />;
         return (
-        <div className='container'>
+        <div id='compliment-form-container'>
             {
                 !this.state.submitted && 
-                <form onSubmit={this.onSubmit}>
+                <form onSubmit={this.onSubmit} id='compliment-form'>
                     <input name='compliment' type="text" placeholder='Type Something Nice!' autoComplete='off'
-                        value={this.state.id} onChange={(event) => {this.setState({ compliment: event.target.value })}} required />
+                        value={this.state.id} onChange={e => this.setState({ compliment: e.target.value })} required />
                     <input name='name' type="text" placeholder='Your Name' autoComplete='off'
-                        value={this.state.id} onChange={(event) => {this.setState({ name: event.target.value })}} required />
+                        value={this.state.id} onChange={e => this.setState({ name: e.target.value })} required />
                     <input name='submit' type='submit' value='Submit' />
                     {/* <button onClick={() => axios.delete(EC2 + '/delete/compliments')}>Delete Compliments</button> */}
                 </form>
@@ -44,8 +44,8 @@ export default class ComplimentForm extends Component {
                 this.state.submitted &&
                 <div className='popup-messages'>
                     <p className='submitted'>Compliment Submitted!</p>
-                    <p className='submitted'>Click<Link to={'/compliments'}><button>here</button></Link>to view all of them</p>
-                    <p className='submitted'>Click<button onClick={() => this.setState({ submitted: false })}>here</button>to make another</p>
+                    <p className='submitted'>Click<Link to={'/compliments'}>here</Link>to view all of them</p>
+                    <p className='submitted'>Click<div onClick={() => this.setState({ submitted: false })}>here</div>to make another</p>
                 </div>
             }
         </div>

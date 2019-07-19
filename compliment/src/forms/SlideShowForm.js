@@ -48,7 +48,7 @@ export default class SlideShowForm extends Component {
         if (this.state.networkError)
             return <NetworkError networkError = {this.state.networkError} error='Image(s) not loaded/submitted' />;
         return (
-            <form onSubmit={this.submitFile} encType="multipart/form-data">
+            <form id='slideshow-form' onSubmit={this.submitFile} encType="multipart/form-data">
                 <div className='file-wrapper'>
                     <input type='text' name='fake file' placeholder='Choose File(s)' value={'Number of files: ' + this.state.fileAmt} readOnly />
                     <input type='file' name='enter filename' onChange={this.handleFileSelection} multiple />
