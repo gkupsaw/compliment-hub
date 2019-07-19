@@ -101,7 +101,7 @@ export default class Compliments extends Component {
         return (
             <div className='compliment-container'>
                 <Settings options={options} />
-                <div className='modal' style={{transform: this.state.helpVisible ? 'scale(1)' : 'scale(0)'}}>
+                <div className='modal' style={{ transform: this.state.helpVisible ? 'scale(1)' : 'scale(0)' }}>
                     <div className='modal-icon' onClick={() => this.setState({ helpVisible: false })}>&times;</div>
                     <div className='submitted'>Click the + on a compliment to see the whole thing!</div>
                     <div className='submitted'>Click on the background of it to favorite it</div>
@@ -109,7 +109,7 @@ export default class Compliments extends Component {
                     <div className='submitted'>Click <Link to={'/slideshow'}>here</Link> to see the slideshow</div>
                 </div>
                 <div id='display' className='box-display'>
-                    <div className='fas fa-question modal-icon' style={{fontSize: 30}}
+                    <div className='fas fa-question modal-icon' style={{ fontSize: 30, top: 20, right: 20 }}
                         onClick={() => this.setState({ helpVisible: true })} />
                     {this.popup}   {/* only renders if it is defined */}
                     {compliments}

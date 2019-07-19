@@ -5,7 +5,7 @@ const complimentSchema = new mongoose.Schema({
         name: String,
         compliment: String,
         id: String,
-        time_stamp: Object,
+        timestamp: Object,
         favorited: Boolean
     });
 const Compliment = mongoose.model('Compliment', complimentSchema);
@@ -13,7 +13,7 @@ const Compliment = mongoose.model('Compliment', complimentSchema);
 const imageSchema = new mongoose.Schema({
         name: String,
         id: String,
-        time_stamp: Object,
+        timestamp: Object,
         data: Object
     });
 const Image = mongoose.model('Image', imageSchema);
@@ -38,41 +38,44 @@ module.exports = {
 
     generateRandIdentifier,
 
-    CreateCompliment: async (name, compliment) => {
-        const new_compliment = new Compliment ({
+    createCompliment: async (name, compliment) => {
+        const newCompliment = new Compliment ({
             name,
             compliment,
             id: generateRandIdentifier(),
-            time_stamp: new Date(),
+            timestamp: new Date(),
             favorited: false
         });
-        await new_compliment.save(err => {
+        await newCompliment.save(err => {
             if (err) return console.error('Error creating compliment:'.red, err);
             console.log("Created a new compliment!".green);
         });
-        return data;
+        return newCompliment;
     },
 
-    UploadImage: async file => {
-        const new_img = new Image({
-            name: file.originalname,
-            id: generateRandIdentifier(),
-            time_stamp: new Date(),
-            data: file
+    uploadImages: async files => {
+        if (files.constructor !== Array) files = [files];
+        images = files.reduce((acc, file) => 
+            acc.concat(new Image({
+                name: file.originalname,
+                id: generateRandIdentifier(),
+                timestamp: new Date(),
+                data: file
+            })),
+        []);
+        await Image.collection.insertMany(images, err => {
+            if (err) return console.error('Error saving doc(s) to DB:'.red, err);
+            console.log("Saved image(s)!".green);
         });
-        await new_img.save(err => {
-            if (err) return console.error('Error saving doc to DB:'.red, err);
-            console.log("Saved image!".green);
-        });
-        return data;
+        return images;
     },
 
-    DeleteCompliments: async () => {
+    deleteCompliments: async () => {
         await Compliment.deleteMany({}).catch(err => console.error('Error deleting compliments:', err));
         console.log('Deleted all compliments!'.yellow);
     },
 
-    DeleteImages: async () => {
+    deleteImages: async () => {
         await Image.deleteMany({}).catch(err => console.error('Error deleting images:', err));
         console.log('Deleted all images!'.yellow);
     }

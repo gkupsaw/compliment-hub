@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import NetworkError from '../atoms/NetworkError';
 import EC2 from '../SERVER';
 
 export default class SlideShowForm extends Component {
@@ -9,13 +10,13 @@ export default class SlideShowForm extends Component {
         this.state = {
             networkError: false,
             fileAmt: 0,
-            selectedFiles: null,
+            selectedFiles: undefined
         }
     }
 
     submitFile = e => {
         e.preventDefault();
-        if (this.state.selectedFiles !== null) {
+        if (this.state.selectedFiles) {
             let formData = new FormData(),
                 config = { headers: { 'content-type': 'multipart/form-data' } },
                 files = {...this.state.selectedFiles};
@@ -23,11 +24,15 @@ export default class SlideShowForm extends Component {
             Object.keys(files).forEach(key => formData.append('image', files[key]));
 
             axios.post(EC2 + '/upload', formData, config)
-            .then(res => {
-                console.log('Req complete, res data:', res.data);
-                this.props.callback({ imageLinks: [...this.props.imageLinks].concat(res.data.data.location) });
-            })
-            .catch(err => console.error('Error submitting file:', err) && this.props.callback({ networkError: true }));
+                .then(res => {
+                    console.log('Req complete, res data:', res.data);
+                    this.props.callback(res.data);
+                    this.setState({ selectedFiles: [], fileAmt: 0 });
+                })
+                .catch(err => {
+                    console.error('Error submitting file:', err);
+                    this.setState({ networkError: true });
+                });
         }
     }
 
@@ -40,16 +45,17 @@ export default class SlideShowForm extends Component {
     }
 
     render() {
+        if (this.state.networkError)
+            return <NetworkError networkError = {this.state.networkError} error='Image(s) not loaded/submitted' />;
         return (
-        <form onSubmit={this.submitFile} encType="multipart/form-data">
-            <div className='file-wrapper'>
-                <input type='text' name='fake file' placeholder='Choose File(s)' value={'Number of files: ' + this.state.fileAmt} readOnly />
-                <input type='file' name='enter filename' onChange={this.handleFileSelection} multiple />
-            </div>
-            {/* <button onClick={() => axios.delete(EC2 + '/delete/imgs')}>Delete Images</button> */}
-            <input type='submit' name='upload' value='Upload'
-                style={{visibility: this.state.fileAmt === 0 ? 'hidden' : 'visible'}} />
-        </form>
-        )
+            <form onSubmit={this.submitFile} encType="multipart/form-data">
+                <div className='file-wrapper'>
+                    <input type='text' name='fake file' placeholder='Choose File(s)' value={'Number of files: ' + this.state.fileAmt} readOnly />
+                    <input type='file' name='enter filename' onChange={this.handleFileSelection} multiple />
+                </div>
+                <input type='submit' name='upload' value='Upload'
+                    style={{visibility: this.state.fileAmt === 0 ? 'hidden' : 'visible'}} />
+            </form>
+        );
      }
 }

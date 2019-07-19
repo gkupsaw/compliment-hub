@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const MongoSchemas = require('./MongoSchemas.js');
 const Compliment = MongoSchemas.Compliment;
 const Image = MongoSchemas.Image;
-const port = 8080;
+const port = process.env.PORT;
 
 if (dotenv.error) console.log('DOTENV error:', dotenv.error);
 
@@ -83,6 +83,14 @@ io.sockets.on('connection', (socket) => {
 //https://www.zeolearn.com/magazine/uploading-files-to-aws-s3-using-nodejs
 //https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html
 
+//HTTP Codes:
+//200: OK
+//201: CREATED
+//202: ACCEPTED (incomplete process)
+//204: NO CONTENT (sending nothing back)
+//400: BAD REQUEST
+//403: FORBIDDEN
+
 
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
@@ -106,60 +114,81 @@ app.use((req, res, next) => {  //copied from enable-cors.org, handles CORS relat
     next();
 });
 
-/* Multer */
-
-const getDate = () => {
+const genFilename = file => {
     let date = new Date();
-    return (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear() + '--' + date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds() + '-' + date.getMilliseconds();
+    date = (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear() + '--' + date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds() + '-' + date.getMilliseconds();
+    return 'IMG-' + date + '-' + file.originalname;
 }
 
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => callback(null, '../uploads/'),
-    filename: (req, file, callback) => callback(null, 'IMG-' + getDate() + '-' + file.originalname),
-    // fileFilter: (req, file, cb) => (file.mimetype === 'img/jpeg' || file.mimetype === 'img/png') ? cb(null, true) : cb(null, false)
-});
+/* Multer */
 
-upload = multer({storage}).array('image');
+// const storage = multer.diskStorage({
+//     destination: (req, file, callback) => callback(null, '../uploads/'),
+//     filename: (req, file, callback) => callback(null, genFilename(file)),
+//     fileFilter: (req, file, cb) => (file.mimetype === 'img/jpeg' || file.mimetype === 'img/png') ? cb(null, true) : cb(null, false)
+// });
 
-app.post('/upload', (req, res) => {
-    console.log('- Image upload request received:', req.method.cyan, req.url.underline);
-    upload(req, res, err => {
-        if (err) console.log('Error uploading'.red, err);
-        MongoSchemas.UploadImage(req.file)
-            .then(db_file => console.log('Uploaded and saved in DB'.green) && res.status(200).send(db_file));
-    });
-});
+// upload = multer({storage}).array('image');  // single instead of array for one file
+
+// app.post('/upload', (req, res) => {
+//     console.log('- Image upload request received:', req.method.cyan, req.url.underline);
+//     upload(req, res, async err => {
+//         if (err) console.log('Error uploading'.red, err);
+//         let db_files = await MongoSchemas.uploadImages(images);
+//         console.log('Uploaded and saved file(s) in DB'.green);
+//         res.status(200).send(db_files);
+//     });
+// });
 
 /* Multer S3 */
 
-// const multers3 = require('multer-s3');
-// const AWS = require('aws-sdk');
-// AWS.config.update({
-//     accessKeyId: process.env.S3_ACCESS_KEY,
-//     secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-//     region: process.env.AWS_REGION
-// }); 
+const multers3 = require('multer-s3');
+const AWS = require('aws-sdk');
+AWS.config.update({
+    accessKeyId: process.env.S3_ACCESS_KEY,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION
+}); 
 
-// const s3 = new AWS.S3();
-// const upload = multer({
-//     storage: multers3({
-//         s3,
-//         bucket: process.env.BUCKET,
-//         key: (req, file, cb) => cb(null, file.originalname)
-//     })
-// });
+const s3 = new AWS.S3();
+const upload = multer({
+    storage: multers3({
+        s3,
+        bucket: process.env.BUCKET,
+        key: (req, file, cb) => cb(null, genFilename(file))
+    })
+});
 
-// app.use((err, req, res, next) => {
-//     console.error('This is the invalid field ->', err.field)
-//     next(err)
-// });
+app.use((err, req, res, next) => {
+    console.error('This is the invalid field ->', err.field)
+    next(err)
+});
 
-// app.post('/upload', upload.array('image'), (req, res) => {
-//     console.log('- Image upload request received:', req.method.cyan, req.url.underline);
-//     MongoSchemas.UploadImage(req.file).then(db_file => {
-//         res.status(200).send(db_file);
-//     });
-// });
+app.post('/upload', upload.array('image'), async (req, res) => {
+    console.log('- Image upload request received:', req.method.cyan, req.url.underline);
+    let images = req.file ? req.file : req.files;
+    let db_files = await MongoSchemas.uploadImages(images);
+    console.log('Uploaded and saved file(s) in DB'.green);
+    res.status(200).send(db_files);
+});
+
+app.post('/remove/image', (req, res) => {
+    console.log('- Image deletion request received:', req.method.cyan, req.url.underline);
+    const { file } = req.body;
+    Image.deleteOne({ _id: file._id })
+        .then(() => {
+            console.log('Successfully removed image from DB'.green);
+            console.log('Removing from S3...'.cyan);
+            s3.deleteObject({ Bucket: process.env.BUCKET, Key: 'uploads/' + file.key },
+                err => {
+                        if (err) console.error('Error removing from S3'.red, err);
+                        else console.log('Successfully removed image from S3 bucket'.green);
+                        res.status(200).send({ success: true });
+                    }
+                );
+        })
+        .catch(err => console.error('Error removing from DB'.red, err));
+});
 
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
@@ -168,7 +197,7 @@ app.post('/upload', (req, res) => {
 app.post('/compliment', (req, res) => {
     console.log('- Compliment submission request received:', req.method.cyan, req.url.underline);
     const { compliment, name } = req.body;
-    MongoSchemas.CreateCompliment(name, compliments)
+    MongoSchemas.createCompliment(name, compliment)
         .then(compliments => {
             io.sockets.in(socket_name).emit('complimentsUpdated', compliments);
             res.status(200).end();
@@ -185,7 +214,7 @@ app.get('/compliments', (req, res) => {
 
 app.get('/pictures', (req, res) => {
     console.log('- Images request received:', req.method.cyan, req.url.underline);
-    Image.find({}, (err,data) => {
+    Image.find({}, (err, data) => {
         if (err) return console.error('Error getting pictures'.red, err);
         res.status(200).send(data);
     });
@@ -193,13 +222,20 @@ app.get('/pictures', (req, res) => {
 
 app.delete('/delete/compliments', (req, res) =>  {
     console.log('- Total compliments deletion request received:', req.method.cyan, req.url.underline);
-    MongoSchemas.DeleteCompliments();
+    MongoSchemas.deleteCompliments();
     res.status(204).end();
 });
 
 app.delete('/delete/imgs', (req, res) =>  {
     console.log('- Total images deletion request received:', req.method.cyan, req.url.underline);
-    MongoSchemas.DeleteImages();
+    MongoSchemas.deleteImages();
+    res.status(204).end();
+});
+
+app.delete('/delete/all', (req, res) =>  {
+    console.log('- Total deletion request received:', req.method.cyan, req.url.underline);
+    MongoSchemas.deleteCompliments();
+    MongoSchemas.deleteImages();
     res.status(204).end();
 });
 
