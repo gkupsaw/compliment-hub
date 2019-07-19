@@ -48,7 +48,7 @@ io.sockets.on('connection', (socket) => {
     socket.on('complimentFavorited', compliment => {
         Compliment.updateOne({ id: compliment.id }, { $set: { favorited: !compliment.favorited } }, err => {
             if (err) console.log(err);
-            console.log('Compliment favorited');
+            console.log('Compliment favorited'.gold);
             Compliment.find({}, (err,data) => {
                 if (err) return console.error(err);
                 io.sockets.in(socket_name).emit('complimentsUpdated', data);

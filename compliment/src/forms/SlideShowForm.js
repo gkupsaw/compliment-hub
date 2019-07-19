@@ -32,13 +32,13 @@ export default class SlideShowForm extends Component {
                     console.error('Error uploading file: File "' + file.name + '" is not of type JPEG or PNG. Ignoring file.');
                 }
             });
+            this.setState({ selectedFiles: [], fileAmt: 0 });
 
             notEmpty
                 ? axios.post(EC2 + '/upload', formData, config)
                     .then(res => {
                         console.log('Req complete, res data:', res.data);
                         this.props.callback(res.data);
-                        this.setState({ selectedFiles: [], fileAmt: 0 });
                     })
                     .catch(err => {
                         console.error('Error submitting file:', err);

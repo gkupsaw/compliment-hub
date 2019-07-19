@@ -104,13 +104,13 @@ export default class SlideShow extends Component {
         return (
             <div className='slideshow-container'>
                 <div className='slideshow-img-container'>
-                    <div className='fas fa-cloud modal-icon' style={{ top: '-10%', right: '-30%' }} title='View uploaded images'
+                    <div className='fas fa-cloud modal-icon' style={{ top: '-20%', right: '-30%' }} title='View uploaded images'
                             onClick={() => this.setState({ modalVisible: true })} />
-                    <div className='fas fa-exchange-alt modal-icon' style={{ top: '-10%', right: 0 }} title='Change image dimensions'
+                    <div className='fas fa-exchange-alt modal-icon' style={{ top: '-20%', right: 0 }} title='Change image dimensions'
                             onClick={() => this.setState({ dummyImageType: this.state.dummyImageType === 'tall' ? 'wide' : 'tall' })} />
                     <div className='modal' style={{transform: this.state.modalVisible ? 'scale(1)' : 'scale(0)'}}>
                         <div className='modal-icon' onClick={() => this.setState({ modalVisible: false })}>&times;</div>
-                        <div className='box-display nax-size' style={{ justifyContent: 'flex-start' }}>
+                        <div className='box-display' style={{ padding: 10, justifyContent: 'flex-start' }}>
                             {this.state.imageLinks.reduce((acc, link) => acc.concat(
                                 <div id={link+'container'} key={link} className='preview-img-container'>
                                     <div id='remove-img' className='modal-icon'>

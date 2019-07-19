@@ -43,9 +43,9 @@ export default class ComplimentForm extends Component {
             {
                 this.state.submitted &&
                 <div className='popup-messages'>
-                    <p className='submitted'>Compliment Submitted!</p>
-                    <p className='submitted'>Click<Link to={'/compliments'}>here</Link>to view all of them</p>
-                    <p className='submitted'>Click<div onClick={() => this.setState({ submitted: false })}>here</div>to make another</p>
+                    <div className='submitted'>Compliment Submitted!</div>
+                    <div className='submitted'>Click <Link to={'/compliments'} style={{ color: 'rgba(0, 0, 0, 0.6)' }}>here</Link> to view all of them</div>
+                    <div className='submitted'>Click <a href='#/' style={{ color: 'rgba(0, 0, 0, 0.6)' }} onClick={() => this.setState({ submitted: false })}>here</a> to make another</div>
                 </div>
             }
         </div>

@@ -77,9 +77,10 @@ input[type='submit'] {
 }
 
 a {
+  @extend .responsive-text;
   text-decoration: none;
-  color: white;
   -webkit-transition: 0.5s;
+  color: white;
   &:hover {
     color: blue;
   }
@@ -160,7 +161,7 @@ a {
 
 .nav-item {
   @extend .flex-centered;
-  margin-right: 30px;
+  // margin-right: 30px;
   padding: 15px;
   border-radius: 5px;
   -webkit-transition: 0.5s;
@@ -259,7 +260,7 @@ a {
   // right: 5%;
   top: 2%;
   right: 5%;
-  z-index: 1;
+  // z-index: 1;
   cursor: pointer;
 }
 
@@ -382,9 +383,19 @@ input[type='file'] {  // hidden on screen
 
 /* Misc Class Styling */
 
-.submitted, .help {
+.submitted {
   margin: 15px;
   text-align: center;
+  font-weight: bold;
+}
+
+.help {
+  @extend .submitted;
+}
+
+.fake-link {
+  @extend a;
+  cursor: pointer;
 }
 
 .error {
@@ -414,6 +425,12 @@ input[type='file'] {  // hidden on screen
 }
 
 /* Media Queries */
+
+@media screen and (max-width: 300px) {
+  .nav-section {
+    flex-flow: column;
+  }
+}
 
 @media screen and (max-width: 570px) {
   .box-display {
