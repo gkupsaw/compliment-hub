@@ -20,16 +20,20 @@ export default class SlideShowForm extends Component {
             let formData = new FormData(),
                 config = { headers: { 'content-type': 'multipart/form-data' } },
                 files = {...this.state.selectedFiles},
-                file;
+                file, notEmpty = false;
             delete files.length;
             Object.keys(files).forEach(key => {
                 file = files[key];
-                (file.type === 'image/jpeg' || file.type === 'image/png')
-                    ? formData.append('image', file)
-                    : console.error('Error uploading file: File "' + file.name + '" is not of type JPEG or PNG. Ignoring file.');
+                if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                    formData.append('image', file);
+                    (notEmpty = true);
+                }
+                else {
+                    console.error('Error uploading file: File "' + file.name + '" is not of type JPEG or PNG. Ignoring file.');
+                }
             });
 
-            (Object.keys(formData).length > 0)
+            notEmpty
                 ? axios.post(EC2 + '/upload', formData, config)
                     .then(res => {
                         console.log('Req complete, res data:', res.data);
