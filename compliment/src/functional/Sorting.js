@@ -12,8 +12,8 @@ const merge = (arr1, arr2, type) => {
     let merged = [], index1 = 0, index2 = 0;
     while (index1 < arr1.length && index2 < arr2.length) {
         let condition;
-        if (type === 'newest') condition = arr1[index1].time_stamp >= arr2[index2].time_stamp;
-        if (type === 'oldest') condition = arr1[index1].time_stamp <= arr2[index2].time_stamp;
+        if (type === 'newest') condition = arr1[index1].timestamp >= arr2[index2].timestamp;
+        if (type === 'oldest') condition = arr1[index1].timestamp <= arr2[index2].timestamp;
         if (condition) {
             merged.push(arr1[index1]);
             index1++;

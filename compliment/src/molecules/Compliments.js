@@ -18,7 +18,7 @@ export default class Compliments extends Component {
             networkError: false,
             loading: true,
             organizeByFav: false,
-            organizeOldestFirst: true,
+            organizeOldestFirst: false,
             complimentsData: [],
             animation: 'none',
             currentlySelected: false,
@@ -45,7 +45,7 @@ export default class Compliments extends Component {
 
     onComplimentSelected = selectedCompliment => {
         if (!this.state.currentlySelected) {
-            const popup = JSON.parse(JSON.stringify(selectedCompliment));
+            let popup = JSON.parse(JSON.stringify(selectedCompliment));
             popup.id = popup.id + '-popup';
             this.popup = <Popup 
                             key={popup.id}

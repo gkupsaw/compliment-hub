@@ -37,7 +37,6 @@ export default class ComplimentForm extends Component {
                     <input name='name' type="text" placeholder='Your Name' autoComplete='off'
                         value={this.state.id} onChange={e => this.setState({ name: e.target.value })} required />
                     <input name='submit' type='submit' value='Submit' />
-                    {/* <button onClick={() => axios.delete(EC2 + '/delete/compliments')}>Delete Compliments</button> */}
                 </form>
             }
             {

@@ -77,7 +77,6 @@ input[type='submit'] {
 }
 
 a {
-  @extend .responsive-text;
   text-decoration: none;
   -webkit-transition: 0.5s;
   color: white;
@@ -426,7 +425,7 @@ input[type='file'] {  // hidden on screen
 
 /* Media Queries */
 
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 400px) {
   .nav-section {
     flex-flow: column;
   }
