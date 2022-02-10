@@ -9,7 +9,7 @@
     "file-type": "^12.0.0",
     "fs": "0.0.1-security",
     "multiparty": "^4.2.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
